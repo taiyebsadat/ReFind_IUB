@@ -16,7 +16,7 @@ db_url = os.environ.get('DATABASE_URL')
 
 # Fallback for local testing (only if DATABASE_URL is not found)
 if not db_url:
-    raw_password = urllib.parse.quote_plus("ReFind@1097")
+    raw_password = urllib.parse.quote_plus("ReFinIUB1097")
     db_url = f"postgresql://postgres:{raw_password}@db.wcwuwxebdimdzqshhlnd.supabase.co:5432/postgres"
 
 # Render sometimes uses "postgres://", which SQLAlchemy requires to be "postgresql://"
@@ -685,6 +685,7 @@ def portfolio():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
