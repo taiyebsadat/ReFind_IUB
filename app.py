@@ -11,15 +11,16 @@ app = Flask(__name__)
 # --- SECURE CONFIGURATION ---
 app.secret_key = os.environ.get('SECRET_KEY', 'university_secret_key')
 
-# Handle Database Password & URI
-raw_password = os.environ.get('DB_PASSWORD', 'ReFind@1097') 
-encoded_password = urllib.parse.quote_plus(raw_password)
-
+# Get the database URL from Render's Environment Variable
 db_url = os.environ.get('DATABASE_URL')
-if not db_url:
-    db_url = f"postgresql://postgres:{encoded_password}@db.wcwuwxebdimdzqshhlnd.supabase.co:5432/postgres"
 
-if db_url.startswith("postgres://"):
+# Fallback for local testing (only if DATABASE_URL is not found)
+if not db_url:
+    raw_password = urllib.parse.quote_plus("ReFind@1097")
+    db_url = f"postgresql://postgres:{raw_password}@db.wcwuwxebdimdzqshhlnd.supabase.co:5432/postgres"
+
+# Render sometimes uses "postgres://", which SQLAlchemy requires to be "postgresql://"
+if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -683,6 +684,7 @@ def portfolio():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
