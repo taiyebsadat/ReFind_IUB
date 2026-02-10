@@ -34,10 +34,10 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-# Your specific URL
-SUPABASE_URL = "https://wcwuwxebdimdzqshhlnd.supabase.co"
-# You MUST copy this from your Supabase API settings
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indjd3V3eGViZGltZHpxc2hobG5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDgzNjcsImV4cCI6MjA4NjMyNDM2N30.FkbInOQ8aLPVUzVi8c0Mr2gx1cp5YpDw3EHDLDQ_e58" 
+    
+# Pulling values from the Render Environment Variables you just set
+SUPABASE_URL = os.environ.get('SUPABASE_URL', "https://wcwuwxebdimdzqshhlnd.supabase.co")
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY') 
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -684,6 +684,7 @@ def portfolio():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
