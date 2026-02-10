@@ -21,7 +21,7 @@
 
         <div class="item-detail-image-box position-relative" style="background-color: #f8f9fa; border-bottom: 1px solid #eee;">
             {% if item.image_file and item.image_file != 'default.jpg' %}
-                <img src="{{ url_for('static', filename='uploads/' + item.image_file) }}" 
+                <img src="{{ item.image_file }}"" 
                      class="w-100 d-block {% if item.status == 'Resolved' %}opacity-50 grayscale{% endif %}" 
                      style="height: 300px; object-fit: cover;" 
                      alt="{{ item.item_name }}">
@@ -165,4 +165,5 @@
     </div>
 </div>
 {% endif %}
+
 {% endblock %}
