@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from supabase import create_client, Client
 
 app = Flask(__name__)
 
@@ -32,6 +33,12 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+# Your specific URL
+SUPABASE_URL = "https://wcwuwxebdimdzqshhlnd.supabase.co"
+# You MUST copy this from your Supabase API settings
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indjd3V3eGViZGltZHpxc2hobG5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDgzNjcsImV4cCI6MjA4NjMyNDM2N30.FkbInOQ8aLPVUzVi8c0Mr2gx1cp5YpDw3EHDLDQ_e58" 
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- DATABASE INITIALIZATION ---
 db = SQLAlchemy(app)
@@ -69,7 +76,8 @@ class Item(db.Model):
     posted_by = db.Column(db.String(20), db.ForeignKey('user.user_id'), nullable=False)
     # Note: We removed the db.relationship line from here to fix the crash.
     
-    image_file = db.Column(db.String(100), default='default.jpg')
+    # Change from String(100) to Text to fit the long URL
+    image_file = db.Column(db.Text, default='https://wcwuwxebdimdzqshhlnd.supabase.co/storage/v1/object/public/item-images/default.jpg')
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)    
     resolved = db.Column(db.Boolean, default=False)
     status = db.Column(db.String(20), default='Active') 
@@ -220,39 +228,48 @@ def submit_report():
     report_type = request.form.get('type')
     item_name = request.form.get('item_name')
     location = request.form.get('location')
-    
-    # Handle "Other" location logic
     if location == 'Other':
         location = request.form.get('other_location')
     
     target_id = request.form.get('target_id')
     security_question = request.form.get('security_question')
     
-    # Handle Image Upload
+    # --- UPDATED SUPABASE STORAGE LOGIC ---
     image_file = request.files.get('image')
-    filename = 'default.jpg' # Default if no image uploaded
+    image_url = 'https://wcwuwxebdimdzqshhlnd.supabase.co/storage/v1/object/public/item-images/default.jpg'
     
     if image_file and image_file.filename != '':
         filename = secure_filename(image_file.filename)
-        # Create unique filename to prevent overwriting
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S_')
-        filename = timestamp + filename
-        image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        unique_name = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+        
+        # Read file as binary
+        file_data = image_file.read()
+        
+        # Upload to Supabase Bucket 'item-images'
+        try:
+            supabase.storage.from_('item-images').upload(unique_name, file_data)
+            # Get the Public URL
+            image_url = supabase.storage.from_('item-images').get_public_url(unique_name)
+        except Exception as e:
+            flash(f"Image upload failed: {str(e)}", "danger")
 
-    # Create the Item
+    # Create the Item with the URL instead of filename
     new_item = Item(
         type=report_type,
         item_name=item_name,
         location=location,
         target_id=target_id,
         description=request.form.get('description'),
-        # Set security question to None if it's a Lost report
         security_question=security_question if report_type == 'Found' else None,
-        image_file=filename,
+        image_file=image_url,  # Now storing the full URL
         posted_by=session['user_id'],
         date_posted=datetime.now(),
         status='Active'
     )
+    
+    db.session.add(new_item)
+    db.session.commit()
+    # ... rest of your code (notifications)
     
     db.session.add(new_item)
     db.session.commit()
@@ -666,4 +683,5 @@ def portfolio():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
