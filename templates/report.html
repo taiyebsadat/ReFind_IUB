@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% set active = 'more' %}
+{% set show_back = False %}
+{% set hide_footer = True %}
+
+{% block content %}
+<div class="back-header">
+    <a href="javascript:history.back()" class="back-btn-inline">
+        <i class="bi bi-arrow-left"></i>
+        <span>Back</span>
+    </a>
+</div>
+
+<div class="container pb-5">
+    <h4 class="fw-bold mb-3 mt-1">
+        {% if edit_mode %}Edit {{ report_type }} Report{% else %}Report {{ report_type }} Item{% endif %}
+    </h4>
+    
+    <div class="card ui-card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form action="{% if edit_mode and item %}{{ url_for('edit_item', item_id=item.id) }}{% else %}{{ url_for('submit_report') }}{% endif %}" 
+                  method="POST" enctype="multipart/form-data">
+                
+                <input type="hidden" name="type" value="{{ report_type }}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-muted">Item Name *</label>
+                    <input type="text" name="item_name" class="form-control form-control-lg bg-light border-0" 
+                           value="{{ item.item_name if edit_mode and item else '' }}" 
+                           placeholder="e.g. Black Leather Wallet" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-muted">Location *</label>
+                    <select name="location" id="locationSelect" class="form-select form-control-lg bg-light border-0" onchange="checkOther(this)" required>
+                        <option value="" disabled {% if not edit_mode %}selected{% endif %}>Select Location</option>
+                        <option value="Canteen" {% if edit_mode and item and item.location == 'Canteen' %}selected{% endif %}>Canteen</option>
+                        <option value="Library" {% if edit_mode and item and item.location == 'Library' %}selected{% endif %}>Library</option>
+                        <option value="Gym" {% if edit_mode and item and item.location == 'Gym' %}selected{% endif %}>Gym</option>
+                        <option value="Other" {% if edit_mode and item and item.location not in ['Canteen', 'Library', 'Gym'] %}selected{% endif %}>Other (Type below)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 animate__animated animate__fadeIn" id="otherLocationDiv" style="display: none;">
+                    <label class="form-label fw-semibold small text-muted">Specify Location</label>
+                    <input type="text" id="otherLocationInput" name="other_location" class="form-control form-control-lg bg-light border-0" 
+                           value="{{ item.location if edit_mode and item and item.location not in ['Canteen', 'Library', 'Gym'] else '' }}" 
+                           placeholder="e.g. Room 502, Gate 1">
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-6 mb-3">
+                        <label class="form-label fw-semibold small text-muted">Owner Name</label>
+                        <input type="text" name="owner_name" class="form-control form-control-lg bg-light border-0" 
+                            value="{{ item.owner_name if edit_mode and item else '' }}" placeholder="If known">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label fw-semibold small text-muted">Target ID</label>
+                        <input type="text" name="target_id" class="form-control form-control-lg bg-light border-0" 
+                            value="{{ item.target_id if edit_mode and item else '' }}" placeholder="Student ID">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-muted">Description / Current Status *</label>
+                    <textarea name="description" class="form-control bg-light border-0" rows="3" 
+                            placeholder="Where is the item now? Provide details..." required>{{ item.description if edit_mode and item else '' }}</textarea>
+                </div>
+
+                {% if report_type == 'Found' %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-muted">Security Question to Claim</label>
+                    <input type="text" name="security_question" class="form-control form-control-lg bg-light border-0" 
+                        value="{{ item.security_question if edit_mode and item else '' }}" 
+                        placeholder="e.g. What color is the phone case?" required>
+                    <div class="form-text" style="font-size: 0.7rem;">This helps you verify the owner before handing the item over.</div>
+                </div>
+                {% endif %}
+
+                {% if not edit_mode %}
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small text-muted">Upload Image</label>
+                    <div class="upload-placeholder border-dashed rounded-4 p-4 text-center bg-light position-relative" id="upload-box" style="border: 2px dashed #ccc;">
+                        <input type="file" name="image" id="fileUpload" class="position-absolute opacity-0 w-100 h-100 top-0 start-0" style="cursor: pointer;" accept="image/*" onchange="previewImage(this)">
+                        <div id="preview-container">
+                            <i class="bi bi-camera text-primary fs-4"></i>
+                            <p class="mb-0 small text-muted mt-1">Tap to select photo</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn {% if report_type == 'Lost' %}btn-maroon{% else %}btn-skyblue{% endif %} py-3 fw-bold rounded-pill shadow-sm">
+                        {% if edit_mode %}Update Report{% else %}Submit Report{% endif %}
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-link text-muted text-decoration-none small">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Logic for "Other" location specification
+function checkOther(select) {
+    const otherDiv = document.getElementById('otherLocationDiv');
+    const otherInput = document.getElementById('otherLocationInput');
+    if (select.value === 'Other') {
+        otherDiv.style.display = 'block';
+        otherInput.required = true;
+    } else {
+        otherDiv.style.display = 'none';
+        otherInput.required = false;
+        otherInput.value = '';
+    }
+}
+
+// Logic for Image Preview
+function previewImage(input) {
+    const container = document.getElementById('preview-container');
+    const box = document.getElementById('upload-box');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            container.innerHTML = `
+                <img src="${e.target.result}" style="max-height: 180px; width: 100%; object-fit: contain; border-radius: 12px; margin-bottom: 8px;">
+                <p class="mb-0 small text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Photo Attached</p>
+                <span class="text-muted" style="font-size: 0.7rem;">Tap to change</span>
+            `;
+            box.classList.remove('bg-light');
+            box.style.backgroundColor = '#f0fff4'; // Light green background when photo is added
+            box.style.borderColor = '#28a745';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('locationSelect');
+    if(select) checkOther(select);
+});
+</script>
+{% endblock %}

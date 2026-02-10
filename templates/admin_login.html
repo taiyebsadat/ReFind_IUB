@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-4">
+            <h5 class="fw-bold text-center mb-4">Manual Admin Access</h5>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} py-2 small text-center fw-bold mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="small fw-bold">Username</label>
+                    <input type="text" name="username" class="form-control shadow-none" required>
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control shadow-none" required>
+                </div>
+                <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm">Authorize</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

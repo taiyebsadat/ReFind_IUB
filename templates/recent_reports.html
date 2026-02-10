@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% set active = 'more' %}
+{% set show_back = True %}
+
+{% block content %}
+
+<div class="mt-4 mb-4">
+    <h3 class="fw-bold">Recent Reports</h3>
+    <p class="text-muted">Explore the latest lost and found items from the IUB community.</p>
+</div>
+
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0 text-center position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" style="z-index: 1051;"></button>
+                <img src="" id="modalImg" class="img-fluid rounded-4 shadow-lg" style="max-height: 85vh; width: auto;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Script to pass the image source to the modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageModal = document.getElementById('imageModal');
+        imageModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const imgSrc = button.getAttribute('data-img-src');
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = imgSrc;
+        });
+    });
+</script>
+
+{% if items %}
+    <div class="d-grid gap-3 mb-5">
+        {% for item in items %}
+            <div class="card report-card mb-3 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="row g-0 align-items-center">
+                    <div class="col-4">
+                        <div class="ratio ratio-1x1">
+                            {% if item.image_file and item.image_file != 'default.jpg' %}
+                                <img src="{{ url_for('static', filename='uploads/' + item.image_file) }}" 
+                                    class="object-fit-cover {% if item.status == 'Resolved' %}grayscale opacity-50{% endif %}" 
+                                    alt="Item">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                                    <i class="bi bi-image text-muted opacity-25 fs-2"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {# Overlay Badge for Status #}
+                            {% if item.status == 'Resolved' %}
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                                <span class="badge bg-dark bg-opacity-75 rounded-pill small">Resolved</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-8">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="fw-bold mb-0 text-truncate" style="max-width: 70%;">{{ item.item_name }}</h6>
+                                <span class="badge {% if item.type == 'Lost' %}bg-danger{% else %}bg-success{% endif %} rounded-pill p-1 px-2" style="font-size: 0.65rem;">
+                                    {{ item.type|upper }}
+                                </span>
+                            </div>
+                            
+                            <p class="text-muted mb-2 mt-1" style="font-size: 0.8rem;">
+                                <i class="bi bi-geo-alt-fill text-secondary me-1"></i>{{ item.location }}
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted" style="font-size: 0.7rem;">
+                                    <i class="bi bi-clock me-1"></i>{{ item.date_posted.strftime('%d %b') }}
+                                </small>
+                                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-sm btn-light rounded-pill px-3 fw-bold" style="font-size: 0.7rem;">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card ui-card text-center py-5 border-0 shadow-sm">
+        <i class="bi bi-cloud-slash display-1 text-muted opacity-25"></i>
+        <h5 class="fw-bold mt-3">Nothing here yet</h5>
+        <p class="text-muted">It looks like there are no active reports at the moment.</p>
+        <a href="{{ url_for('report', report_type='Lost') }}" class="btn btn-primary btn-sm mt-3 px-4">Create First Report</a>
+    </div>
+{% endif %}
+
+{% endblock %}

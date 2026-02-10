@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="ui-card p-4 border-0 shadow-sm rounded-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Claim Request</h5>
+            {% if item.status == 'Resolved' %}
+                <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-check-circle-fill me-1"></i> RESOLVED
+                </span>
+            {% else %}
+                <span class="badge bg-soft-warning text-warning px-3 py-2 rounded-pill border border-warning">PENDING</span>
+            {% endif %}
+        </div>
+
+        <div class="bg-light p-3 rounded-4 mb-4">
+            <p class="text-muted small mb-2"><i class="bi bi-person me-1"></i>Message from Finder ({{ msg.sender_id }}):</p>
+            <p class="mb-0 fw-medium text-dark">{{ msg.content }}</p>
+        </div>
+
+        {% if item.status != 'Resolved' %}
+            {% if msg.phone or msg.fb_link %}
+            <div class="mb-4">
+                <p class="text-muted small mb-2">Sender's Contact Info:</p>
+                {% if msg.phone %}<p class="mb-1"><strong>Phone:</strong> {{ msg.phone }}</p>{% endif %}
+                {% if msg.fb_link %}<p class="mb-0"><strong>FB:</strong> <a href="{{ msg.fb_link }}" target="_blank">View Profile</a></p>{% endif %}
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <hr class="opacity-10">
+
+        <div class="d-flex gap-2">
+            {% if item.status != 'Resolved' %}
+                <a href="https://wa.me/{{ msg.phone if msg.phone else '' }}" class="btn btn-primary rounded-pill flex-grow-1 py-3 fw-bold">
+                    <i class="bi bi-whatsapp me-2"></i>Contact Finder
+                </a>
+            {% else %}
+                <div class="alert alert-secondary w-100 text-center rounded-4 mb-0 border-0">
+                    <i class="bi bi-lock-fill me-2"></i> This case has been <strong>Resolved</strong>.
+                    <p class="small mb-0 mt-1 text-muted">Contact information is no longer available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

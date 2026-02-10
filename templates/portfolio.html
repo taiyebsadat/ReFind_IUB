@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Taiyeb Sadat | CSE Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #020617, #0f172a);
+            color: #e5e7eb;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Layout ---------- */
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        /* ---------- Home Button ---------- */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s ease;
+            z-index: 10;
+        }
+
+        .home-btn:hover {
+            background: #38bdf8;
+            color: #020617;
+        }
+
+        @media (max-width: 600px) {
+            .home-btn {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+
+        /* ---------- Header ---------- */
+        .header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        /* ---------- Profile ---------- */
+        .profile-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .circuit-ring {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            padding: 6px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            box-shadow: 0 0 25px rgba(56,189,248,0.6);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .circuit-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 0%;
+            background: #020617;
+            padding: 6px;
+        }
+
+        @keyframes glow {
+            0%,100% { box-shadow: 0 0 18px rgba(56,189,248,0.5); }
+            50% { box-shadow: 0 0 35px rgba(56,189,248,0.9); }
+        }
+
+        /* ---------- Sections ---------- */
+        section {
+            margin-bottom: 55px;
+        }
+
+        section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 18px;
+            border-left: 5px solid #38bdf8;
+            padding-left: 12px;
+        }
+
+        /* ---------- Cards ---------- */
+        .card {
+            background: rgba(2,6,23,0.85);
+            padding: 22px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            transition: 0.2s ease;
+            border: 1px solid rgba(148,163,184,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56,189,248,0.4);
+        }
+
+        /* ---------- Skills ---------- */
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+
+        /* ---------- Projects ---------- */
+        .card h3 {
+            margin-bottom: 8px;
+            color: #38bdf8;
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            text-align: center;
+            margin-top: 70px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="{{ url_for(home_destination) }}" class="home-btn">
+    ⬅ Home
+</a>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="profile-wrapper">
+            <div class="circuit-ring">
+                <img src="static/profile.jpg" alt="Taiyeb Sadat">
+            </div>
+        </div>
+
+        <h1>Taiyeb Sadat</h1>
+        <p>CSE Undergraduate • Mobile Photographer</p>
+    </div>
+
+    <!-- About -->
+    <section>
+        <h2>About Me</h2>
+        <div class="card">
+            <p>
+                I am a Computer Science & Engineering student passionate about
+                software development, problem solving, and building real-world,
+                technology-driven solutions. I enjoy learning concepts deeply
+                and turning ideas into practical projects.
+            </p>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section>
+        <h2>Skills</h2>
+        <div class="card skills">
+            <div class="skill">Python</div>
+            <div class="skill">Java (Learning)</div>
+            <div class="skill">Data Structures</div>
+            <div class="skill">OOP</div>
+            <div class="skill">Flask (Basic)</div>
+            <div class="skill">Problem Solving</div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section>
+        <h2>Projects</h2>
+
+        <div class="card">
+            <h3>ReFind IUB</h3>
+            <p>
+                A Lost & Found platform for Independent University, Bangladesh —
+                simple, fast, and community-driven.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>JavaFX Desktop Application</h3>
+            <p>Currently learning and developing core features.</p>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+        <h2>Education</h2>
+        <div class="card">
+            <strong>BSc in Computer Science & Engineering</strong><br>
+            Independent University, Bangladesh (IUB)
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section>
+        <h2>Contact</h2>
+        <div class="card">
+            <p>Email: <a href="mailto:taiyebsadat@gmail.com">taiyebsadat@gmail.com</a></p>
+            <p>Facebook: <a href="https://www.facebook.com/taiyebsadat">facebook.com/taiyebsadat</a></p>
+            <p>GitHub: <a href="https://github.com/taiyebsadat">github.com/taiyebsadat</a></p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/Sadat26">linkedin.com/in/Sadat26</a></p>
+            <p>Instagram: <a href="https://www.instagram.com/_sad._.at_/">instagram.com/taiyebsadat</a></p>
+        </div>
+    </section>
+
+    <div class="footer">
+        © 2026 Taiyeb Sadat — CSE Portfolio
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% set active = 'more' %}
+{% set show_back = False %}
+{% set hide_footer = True %}
+
+{% block content %}
+
+<div class="mt-5 mb-4">
+    <h5 class="fw-bold mb-3 ps-2">Found Recently</h5>
+    <div id="foundSlider" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            {% if found_items %}
+                {% for item in found_items %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="ui-card overflow-hidden border-0 shadow-sm mx-0 position-relative">
+                        <div class="row g-0 align-items-center">
+                            
+                            <div class="col-4">
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 140px;">
+                                    {% if item.image_file %}
+                                        <img src="{{ url_for('static', filename='uploads/' + item.image_file) }}" class="img-fluid h-100 w-100" style="object-fit: cover;" alt="Item">
+                                    {% else %}
+                                        <div class="text-center text-muted" style="font-size: 0.75rem;">
+                                            <i class="bi bi-camera d-block fs-3"></i>
+                                            Image
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-8">
+                                <div class="card-body py-2 px-3">
+                                    <h5 class="fw-bold text-dark text-truncate mb-1" style="font-size: 1.1rem;">{{ item.item_name }}</h5>
+                                    <p class="text-muted small mb-2">
+                                        <i class="bi bi-geo-alt-fill text-secondary me-1"></i>{{ item.location }}
+                                    </p>
+                                    
+                                    <div class="w-100 py-1 rounded-pill bg-success text-white text-center fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                        Recent Found
+                                    </div>
+
+                                    <a href="{{ url_for('item_detail', item_id=item.id) }}" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="carousel-item active">
+                    <div class="ui-card shadow-sm border-0 mx-0">
+                        <div class="card-body text-center d-flex flex-column align-items-center justify-content-center" style="height: 140px;">
+                            <h6 class="fw-bold text-dark mb-1">No Recent Items Found</h6>
+                            <button onclick="window.location.reload();" class="btn btn-skyblue btn-sm rounded-pill px-4 fw-bold mt-2">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if found_items and found_items|length > 1 %}
+        <div class="carousel-indicators" style="bottom: -35px;">
+            {% for item in found_items %}
+            <button type="button" data-bs-target="#foundSlider" data-bs-slide-to="{{ loop.index0 }}" class="{% if loop.first %}active{% endif %}" style="background-color: #6c757d; width: 7px; height: 7px; border-radius: 50%; border: none; margin: 0 4px;"></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<h5 class="fw-bold mb-3 mt-5 ps-2">Quick Tools</h5>
+<div class="row g-3 mb-5 px-1">
+    <div class="col-6">
+        <a href="{{ url_for('report', report_type='Lost') }}" class="tool-card py-4 border-0 shadow-sm text-decoration-none">
+            <i class="bi bi-search fs-2 mb-2 d-block text-dark"></i>
+            <span class="text-dark fw-medium">Report Lost</span>
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="{{ url_for('report', report_type='Found') }}" class="tool-card py-4 border-0 shadow-sm text-decoration-none">
+            <i class="bi bi-plus-circle fs-2 mb-2 d-block text-dark"></i>
+            <span class="text-dark fw-medium">Report Found</span>
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="{{ url_for('dashboard') }}" class="tool-card py-4 border-0 shadow-sm text-decoration-none">
+            <i class="bi bi-file-text fs-2 mb-2 d-block text-dark"></i>
+            <span class="text-dark fw-medium">My Reports</span>
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="{{ url_for('recent_reports') }}" class="tool-card py-4 border-0 shadow-sm text-decoration-none">
+            <i class="bi bi-clock-history fs-2 mb-2 d-block text-dark"></i>
+            <span class="text-dark fw-medium">Recent Items</span>
+        </a>
+    </div>
+</div>
+
+<div class="fixed-action-btn">
+    <div class="dropup">
+        <button class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" 
+                type="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                style="width: 56px; height: 56px;">
+            <i class="bi bi-plus-lg fs-3"></i>
+        </button> 
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mb-3 rounded-4 p-2">
+            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ url_for('report', report_type='Lost') }}"><i class="bi bi-search me-2 text-danger"></i> Report Lost</a></li>
+            <li><hr class="dropdown-divider opacity-50"></li>
+            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ url_for('report', report_type='Found') }}"><i class="bi bi-plus-circle me-2 text-success"></i> Report Found</a></li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
