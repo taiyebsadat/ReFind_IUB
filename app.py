@@ -17,7 +17,8 @@ db_url = os.environ.get('DATABASE_URL')
 # Fallback for local testing (only if DATABASE_URL is not found)
 if not db_url:
     raw_password = urllib.parse.quote_plus("ReFind_1097")
-    db_url = f"postgresql://postgres:{raw_password}@db.wcwuwxebdimdzqshhlnd.supabase.co:5432/postgres"
+    db_url = f"postgresql://postgres.wcwuwxebdimdzqshhlnd:{raw_password}@aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
+    #db_url = f"postgresql://postgres:{raw_password}@db.wcwuwxebdimdzqshhlnd.supabase.co:5432/postgres"
 
 # Render sometimes uses "postgres://", which SQLAlchemy requires to be "postgresql://"
 if db_url and db_url.startswith("postgres://"):
@@ -684,6 +685,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
