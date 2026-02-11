@@ -270,10 +270,7 @@ def submit_report():
     
     db.session.add(new_item)
     db.session.commit()
-    # ... rest of your code (notifications)
-    
-    db.session.add(new_item)
-    db.session.commit()
+
 
     # --- PROBABLE ID NOTIFICATION ---
     if report_type == 'Found' and target_id:
@@ -687,6 +684,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
