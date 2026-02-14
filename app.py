@@ -49,7 +49,8 @@ db = SQLAlchemy(app)
 AUTHORIZED_ADMINS = ['2412517']
 ADMIN_ACCOUNTS = {
     "sadat": "sadat26",
-    "fahad": "fahad2026"
+    "fahad": "fahad2026",
+    "Himawari": "itachiismyhusband01"
     }
 
 # --- MODELS ---
@@ -685,6 +686,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
