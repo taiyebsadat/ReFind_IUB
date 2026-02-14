@@ -309,7 +309,7 @@ def ask_question(item_id):
     
     flash("Question sent to the claimant!", "success")
     return redirect(url_for('dashboard'))
-def admin_panel():
+
 @app.route('/admin_panel') # Changed from /admin to match your url_for calls
 def admin_panel():
     # Allow access if it's your specific ID OR if the manual admin session is active
@@ -687,6 +687,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
