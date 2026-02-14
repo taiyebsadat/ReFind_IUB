@@ -311,6 +311,7 @@ def ask_question(item_id):
     return redirect(url_for('dashboard'))
 def admin_panel():
 @app.route('/admin_panel') # Changed from /admin to match your url_for calls
+def admin_panel():
     # Allow access if it's your specific ID OR if the manual admin session is active
     is_authorized_id = session.get('user_id') in AUTHORIZED_ADMINS
     is_manual_admin = session.get('is_admin') == True
@@ -341,7 +342,6 @@ def admin_panel():
 #AUTHORIZED_ADMINS = ['2412517']
 @app.route('/admin_login', methods=['GET', 'POST'])
 def admin_login():
-    
     # --- ADMIN CREDENTIALS ---
     AUTHORIZED_ADMINS = ['2412517']
     ADMIN_ACCOUNTS = {
@@ -687,6 +687,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
