@@ -339,14 +339,14 @@ def admin_panel():
 
 # --- ADMIN CREDENTIALS (MANUAL) ---
 # --- MULTIPLE ADMIN CREDENTIALS ---
-'''
+AUTHORIZED_ADMINS = ['2412517']
+# --- ADMIN CREDENTIALS ---
 AUTHORIZED_ADMINS = ['2412517']
 ADMIN_ACCOUNTS = {
     "sadat": "sadat26",
     "fahad": "fahad2026",
-    "moderator_refind": "manage_items_44"
-}
-'''
+    "Himawari": "itachiismyhusband01"
+    }
 @app.route('/admin_login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -686,6 +686,7 @@ if __name__ == '__main__':
         db.create_all()  # Creates tables if they don't exist
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
